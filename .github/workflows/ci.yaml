@@ -95,7 +95,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: '${{ steps.build.outputs.image }}'
+          image-ref: 'iot'
           cache-dir: '/var/lib/trivy'
           exit-code: '0'
           severity: 'MEDIUM,HIGH,CRITICAL'
@@ -108,7 +108,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: '${{ steps.build.outputs.image }}'
+          image-ref: 'iot'
           cache-dir: '/var/lib/trivy'
           exit-code: '0'
           severity: 'MEDIUM,HIGH,CRITICAL'
