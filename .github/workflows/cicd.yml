@@ -63,7 +63,7 @@ jobs:
     - name: Build docker
       id: build
       run: |-
-        GCR_IMAGE=IOY=T
+        GCR_IMAGE=IOT
         docker build . --tag $GCR_IMAGE
         #docker push $GCR_IMAGE
         echo "::set-output name=image::$GCR_IMAGE"
