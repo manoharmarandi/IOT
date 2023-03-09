@@ -88,14 +88,14 @@ jobs:
 
       - name: Build backend docker image
         run: |
-          IMAGE=IOT
+          IMAGE=iot
           cd ./EdgeSolution/modules/BackendModule
           docker build -f Dockerfile.amd64 -t $IMAGE .
           echo "::set-output name=image::$IMAGE"
 
       - name: Build frontend docker image
         run: |
-          IMAGE=IOT
+          IMAGE=iot
           cd ./EdgeSolution/modules/FrontendModule
           docker build -f Dockerfile.amd64 -t $IMAGE .
           echo "::set-output name=image::$IMAGE"
