@@ -92,13 +92,26 @@ jobs:
           cd ./EdgeSolution/modules/BackendModule
           docker build -f Dockerfile.amd64 -t $IMAGE .
           echo "::set-output name=image::$IMAGE"
-
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{ steps.build.outputs.image }}'
+          cache-dir: '/var/lib/trivy'
+          exit-code: '0'
+          severity: 'MEDIUM,HIGH,CRITICAL'
       - name: Build frontend docker image
         run: |
           IMAGE=iot
           cd ./EdgeSolution/modules/FrontendModule
           docker build -f Dockerfile.amd64 -t $IMAGE .
           echo "::set-output name=image::$IMAGE"
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{ steps.build.outputs.image }}'
+          cache-dir: '/var/lib/trivy'
+          exit-code: '0'
+          severity: 'MEDIUM,HIGH,CRITICAL'
 
       # - name: Push backend docker image
       #   run: |
