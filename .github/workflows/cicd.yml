@@ -64,7 +64,7 @@ jobs:
       id: build
       run: |-
         GCR_IMAGE=IOT
-        docker build . --tag $GCR_IMAGE
+        docker build . 
         #docker push $GCR_IMAGE
         echo "::set-output name=image::$GCR_IMAGE"
     - name: Run Trivy vulnerability scanner
