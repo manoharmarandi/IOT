@@ -101,6 +101,7 @@ jobs:
           severity: 'MEDIUM,HIGH,CRITICAL'
       - name: snyk test
         run: |-
+          npm install snyk -g
           snyk container test iot-backend
       # - name: Run Snyk to check Docker image for vulnerabilities
       #   # Snyk can be used to break the build when it detects vulnerabilities.
@@ -130,6 +131,7 @@ jobs:
           severity: 'MEDIUM,HIGH,CRITICAL'
       - name: snyk test
         run: |-
+           npm install snyk -g
            snyk container test iot-frontend
       # - name: Run Snyk to check Docker image for vulnerabilities
       #   # Snyk can be used to break the build when it detects vulnerabilities.
