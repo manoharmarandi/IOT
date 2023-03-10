@@ -98,7 +98,12 @@ jobs:
           image-ref: 'iot-backend'
           cache-dir: '/var/lib/trivy'
           exit-code: '0'
-          severity: 'MEDIUM,HIGH,CRITICAL'
+          severity: 'MEDIUM,HIGH,CRITICAL,LOW'
+      - name: anchore scan
+        continue-on-error: true
+        run: |-
+          pip install anchorecli
+          anchore-cli image vuln iot-backend os
       - name: snyk test
         continue-on-error: true
         run: |-
@@ -130,13 +135,18 @@ jobs:
           image-ref: 'iot-frontend'
           cache-dir: '/var/lib/trivy'
           exit-code: '0'
-          severity: 'MEDIUM,HIGH,CRITICAL'
+          severity: 'MEDIUM,HIGH,CRITICAL,LOW'
       - name: snyk test
         continue-on-error: true
         run: |-
            npm install snyk -g
            snyk auth e6b5719c-46fa-4dd7-8cf1-50ebd68923ae
            snyk container test iot-frontend
+      - name: anchore scan
+        continue-on-error: true
+        run: |-
+          pip install anchorecli
+          anchore-cli image vuln iot-frontend os
       - name: Upload result to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v2
         with:
