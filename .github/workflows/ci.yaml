@@ -101,8 +101,10 @@ jobs:
       - uses: anchore/scan-action@v3
         with:
           image: "iot-backend"
-          severity-cutoff: negligible
+          severity-cutoff: critical
           fail-build: false
+      - name: Inspect action SARIF report
+        run: cat ${{ steps.scan.outputs.sarif }}
       - name: snyk test
         continue-on-error: true
         run: |-
@@ -144,8 +146,10 @@ jobs:
       - uses: anchore/scan-action@v3
         with:
           image: "iot-frontend"
-          severity-cutoff: negligible
+          severity-cutoff: critical
           fail-build: false
+      - name: Inspect action SARIF report
+        run: cat ${{ steps.scan.outputs.sarif }}
       - name: Run Snyk to check Docker image for vulnerabilities
         # Snyk can be used to break the build when it detects vulnerabilities.
         # In this case we want to upload the issues to GitHub Code Scanning
