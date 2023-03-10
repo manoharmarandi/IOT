@@ -104,7 +104,7 @@ jobs:
         run: |-
           npm install snyk -g
           snyk auth e6b5719c-46fa-4dd7-8cf1-50ebd68923ae
-          snyk container test iot-backend && echo $
+          snyk container test iot-backend --sarif
       - name: Run Snyk to check Docker image for vulnerabilities
         # Snyk can be used to break the build when it detects vulnerabilities.
         # In this case we want to upload the issues to GitHub Code Scanning
@@ -136,7 +136,7 @@ jobs:
         run: |-
            npm install snyk -g
            snyk auth e6b5719c-46fa-4dd7-8cf1-50ebd68923ae
-           snyk container test iot-frontend && echo $
+           snyk container test iot-frontend --sarif
       - name: Run Snyk to check Docker image for vulnerabilities
         # Snyk can be used to break the build when it detects vulnerabilities.
         # In this case we want to upload the issues to GitHub Code Scanning
