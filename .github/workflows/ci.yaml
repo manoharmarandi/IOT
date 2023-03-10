@@ -101,6 +101,7 @@ jobs:
       - uses: anchore/scan-action@v3
         with:
           image: "iot-backend"
+          severity-cutoff: negligible
           fail-build: false
       - name: snyk test
         continue-on-error: true
@@ -143,6 +144,7 @@ jobs:
       - uses: anchore/scan-action@v3
         with:
           image: "iot-frontend"
+          severity-cutoff: negligible
           fail-build: false
       - name: Run Snyk to check Docker image for vulnerabilities
         # Snyk can be used to break the build when it detects vulnerabilities.
