@@ -98,16 +98,14 @@ jobs:
           cache-dir: '/var/lib/trivy'
           exit-code: '0'
           severity: 'MEDIUM,HIGH,CRITICAL,LOW'
-      - name: Run the local anchore scan action itself with sarif generation enabled
-        uses: anchore/scan-action@v1
+      - uses: anchore/scan-action@v3
         with:
-          image-reference: "iot:frontend"
-          debug: true
-          acs-report-enable: true
-      - name: Upload Anchore Scan ACS Report
-        uses: github/codeql-action/upload-sarif@v1
+          image: "iot-backend"
+          fail-build: true
+      - name: upload Anchore scan SARIF report
+        uses: github/codeql-action/upload-sarif@v2
         with:
-          sarif_file: results.sarif
+          sarif_file: ${{ steps.scan.outputs.sarif }}
       - name: snyk test
         continue-on-error: true
         run: |-
@@ -146,16 +144,14 @@ jobs:
            npm install snyk -g
            snyk auth e6b5719c-46fa-4dd7-8cf1-50ebd68923ae
            snyk container test iot-frontend --json-file-output=vuln.json
-      - name: Run the local anchore scan action itself with sarif generation enabled
-        uses: anchore/scan-action@v1
+      - uses: anchore/scan-action@v3
         with:
-          image-reference: "iot-backend"
-          debug: true
-          acs-report-enable: true
-      - name: Upload Anchore Scan ACS Report
-        uses: github/codeql-action/upload-sarif@v1
+          image: "iot-frontend"
+          fail-build: true
+      - name: upload Anchore scan SARIF report
+        uses: github/codeql-action/upload-sarif@v2
         with:
-          sarif_file: results.sarif
+          sarif_file: ${{ steps.scan.outputs.sarif }}
       - name: Run Snyk to check Docker image for vulnerabilities
         # Snyk can be used to break the build when it detects vulnerabilities.
         # In this case we want to upload the issues to GitHub Code Scanning
