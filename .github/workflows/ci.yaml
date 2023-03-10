@@ -1,4 +1,3 @@
----
 name: CI
 
 on: # yamllint disable-line rule:truthy
@@ -99,17 +98,22 @@ jobs:
           cache-dir: '/var/lib/trivy'
           exit-code: '0'
           severity: 'MEDIUM,HIGH,CRITICAL,LOW'
-      - name: anchore scan
-        continue-on-error: true
-        run: |-
-          pip install anchorecli
-          anchore-cli image vuln iot-backend os
+      - name: Run the local anchore scan action itself with sarif generation enabled
+        uses: anchore/scan-action@v1
+        with:
+          image-reference: "iot:frontend"
+          debug: true
+          acs-report-enable: true
+      - name: Upload Anchore Scan ACS Report
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: results.sarif
       - name: snyk test
         continue-on-error: true
         run: |-
           npm install snyk -g
           snyk auth e6b5719c-46fa-4dd7-8cf1-50ebd68923ae
-          snyk container test iot-backend --sarif
+          snyk container test iot-backend --json-file-output=vuln.json
       - name: Run Snyk to check Docker image for vulnerabilities
         # Snyk can be used to break the build when it detects vulnerabilities.
         # In this case we want to upload the issues to GitHub Code Scanning
@@ -141,16 +145,17 @@ jobs:
         run: |-
            npm install snyk -g
            snyk auth e6b5719c-46fa-4dd7-8cf1-50ebd68923ae
-           snyk container test iot-frontend
-      - name: anchore scan
-        continue-on-error: true
-        run: |-
-          pip install anchorecli
-          anchore-cli image vuln iot-frontend os
-      - name: Upload result to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v2
+           snyk container test iot-frontend --json-file-output=vuln.json
+      - name: Run the local anchore scan action itself with sarif generation enabled
+        uses: anchore/scan-action@v1
         with:
-          sarif_file: snyk.sarif
+          image-reference: "iot-backend"
+          debug: true
+          acs-report-enable: true
+      - name: Upload Anchore Scan ACS Report
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: results.sarif
       - name: Run Snyk to check Docker image for vulnerabilities
         # Snyk can be used to break the build when it detects vulnerabilities.
         # In this case we want to upload the issues to GitHub Code Scanning
@@ -164,10 +169,6 @@ jobs:
         with:
           image: iot-frontend
           args: --file=./EdgeSolution/modules/BackendModule/Dockerfile.amd64
-      - name: Upload result to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: snyk.sarif
       # - name: Push backend docker image
       #   run: |
       #     docker push ${{env.ACR_IMAGE_PATH_BACKEND}}
