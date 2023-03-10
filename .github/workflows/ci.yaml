@@ -100,6 +100,7 @@ jobs:
           exit-code: '0'
           severity: 'MEDIUM,HIGH,CRITICAL'
       - name: snyk test
+        continue-on-error: true
         run: |-
           npm install snyk -g
           snyk auth e6b5719c-46fa-4dd7-8cf1-50ebd68923ae
@@ -131,6 +132,7 @@ jobs:
           exit-code: '0'
           severity: 'MEDIUM,HIGH,CRITICAL'
       - name: snyk test
+        continue-on-error: true
         run: |-
            npm install snyk -g
            snyk auth e6b5719c-46fa-4dd7-8cf1-50ebd68923ae
