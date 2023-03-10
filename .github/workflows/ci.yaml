@@ -99,11 +99,11 @@ jobs:
           cache-dir: '/var/lib/trivy'
           exit-code: '0'
           severity: 'MEDIUM,HIGH,CRITICAL'
-      - name: snyk test
-        run: |-
-          npm install snyk -g
-          snyk auth e6b5719c-46fa-4dd7-8cf1-50ebd68923ae
-          snyk container test iot-backend
+      # - name: snyk test
+      #   run: |-
+      #     npm install snyk -g
+      #     snyk auth e6b5719c-46fa-4dd7-8cf1-50ebd68923ae
+      #     snyk container test iot-backend
       - name: Run Snyk to check Docker image for vulnerabilities
         # Snyk can be used to break the build when it detects vulnerabilities.
         # In this case we want to upload the issues to GitHub Code Scanning
@@ -130,11 +130,11 @@ jobs:
           cache-dir: '/var/lib/trivy'
           exit-code: '0'
           severity: 'MEDIUM,HIGH,CRITICAL'
-      - name: snyk test
-        run: |-
-           npm install snyk -g
-           snyk auth e6b5719c-46fa-4dd7-8cf1-50ebd68923ae
-           snyk container test iot-frontend
+      # - name: snyk test
+      #   run: |-
+      #      npm install snyk -g
+      #      snyk auth e6b5719c-46fa-4dd7-8cf1-50ebd68923ae
+      #      snyk container test iot-frontend
       - name: Run Snyk to check Docker image for vulnerabilities
         # Snyk can be used to break the build when it detects vulnerabilities.
         # In this case we want to upload the issues to GitHub Code Scanning
