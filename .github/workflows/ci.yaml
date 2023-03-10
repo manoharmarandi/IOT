@@ -136,7 +136,11 @@ jobs:
         run: |-
            npm install snyk -g
            snyk auth e6b5719c-46fa-4dd7-8cf1-50ebd68923ae
-           snyk container test iot-frontend --sarif
+           snyk container test iot-frontend
+      - name: Upload result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: snyk.sarif
       - name: Run Snyk to check Docker image for vulnerabilities
         # Snyk can be used to break the build when it detects vulnerabilities.
         # In this case we want to upload the issues to GitHub Code Scanning
@@ -150,6 +154,10 @@ jobs:
         with:
           image: iot-frontend
           args: --file=./EdgeSolution/modules/BackendModule/Dockerfile.amd64
+      - name: Upload result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: snyk.sarif
       # - name: Push backend docker image
       #   run: |
       #     docker push ${{env.ACR_IMAGE_PATH_BACKEND}}
