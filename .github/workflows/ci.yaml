@@ -103,12 +103,11 @@ jobs:
           image: "iot-backend"
           severity-cutoff: critical
           fail-build: false
-      - name: upload Anchore scan SARIF report
-        uses: github/codeql-action/upload-sarif@v2
+      - name: Upload artifact
+        uses: actions/upload-artifact@v1.0.0
         with:
-          sarif_file: ${{ steps.scan.outputs.sarif }}
-      - name: Inspect action SARIF report
-        run: cat ${{ steps.scan.outputs.sarif }}
+          name: AnchoreReports
+          path: ./anchore-reports/
       - name: snyk test
         continue-on-error: true
         run: |-
@@ -152,12 +151,11 @@ jobs:
           image: "iot-frontend"
           severity-cutoff: critical
           fail-build: false
-      - name: upload Anchore scan SARIF report
-        uses: github/codeql-action/upload-sarif@v2
+      - name: Upload artifact
+        uses: actions/upload-artifact@v1.0.0
         with:
-          sarif_file: ${{ steps.scan.outputs.sarif }}
-      - name: Inspect action SARIF report
-        run: cat ${{ steps.scan.outputs.sarif }}
+          name: AnchoreReports
+          path: ./anchore-reports/
       - name: Run Snyk to check Docker image for vulnerabilities
         # Snyk can be used to break the build when it detects vulnerabilities.
         # In this case we want to upload the issues to GitHub Code Scanning
