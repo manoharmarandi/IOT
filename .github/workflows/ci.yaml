@@ -104,7 +104,7 @@ jobs:
           severity-cutoff: critical
           fail-build: false
       - name: Upload artifact
-        uses: actions/upload-artifact@v1.0.0
+        uses: actions/upload-artifact@v2
         with:
           name: AnchoreReports
           path: ./anchore-reports/
@@ -152,7 +152,7 @@ jobs:
           severity-cutoff: critical
           fail-build: false
       - name: Upload artifact
-        uses: actions/upload-artifact@v1.0.0
+        uses: actions/upload-artifact@v2
         with:
           name: AnchoreReports
           path: ./anchore-reports/
