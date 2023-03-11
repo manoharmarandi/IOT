@@ -112,11 +112,20 @@ jobs:
           image: "iot-backend"
           fail-build: false
           severity-cutoff: critical
-          
+
       - name: Upload vulnerability report
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
+
+      - name: Inspect action SARIF report
+        run: cat ${{ steps.scan.outputs.sarif }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: AnchoreReports
+          path: ./anchore-reports/
 
       - name: snyk test
         continue-on-error: true
@@ -153,6 +162,28 @@ jobs:
           cache-dir: '/var/lib/trivy'
           exit-code: '0'
           severity: 'MEDIUM,HIGH,CRITICAL,LOW'
+
+      # - name: Run the Anchore Grype scan action
+      #   uses: anchore/scan-action@d5aa5b6cb9414b0c7771438046ff5bcfa2854ed7
+      #   id: scan
+      #   with:
+      #     image: "iot-backend"
+      #     fail-build: false
+      #     severity-cutoff: critical
+
+      # - name: Upload vulnerability report
+      #   uses: github/codeql-action/upload-sarif@v2
+      #   with:
+      #     sarif_file: ${{ steps.scan.outputs.sarif }}
+
+      # - name: Inspect action SARIF report
+      #   run: cat ${{ steps.scan.outputs.sarif }}
+
+      # - name: Upload artifact
+      #   uses: actions/upload-artifact@v1.0.0
+      #   with:
+      #     name: AnchoreReports
+      #     path: ./anchore-reports/
 
       - name: snyk test
         continue-on-error: true
