@@ -111,6 +111,7 @@ jobs:
         with:
           image: "iot-backend"
           fail-build: false
+          acs-report-enable: true
           severity-cutoff: critical
 
       - name: Upload vulnerability report
@@ -125,7 +126,7 @@ jobs:
         uses: actions/upload-artifact@v1.0.0
         with:
           name: AnchoreReports
-          path: ./anchore-reports/
+          path: .
 
       - name: snyk test
         continue-on-error: true
@@ -169,6 +170,7 @@ jobs:
       #   with:
       #     image: "iot-backend"
       #     fail-build: false
+      #     acs-report-enable: true
       #     severity-cutoff: critical
 
       # - name: Upload vulnerability report
