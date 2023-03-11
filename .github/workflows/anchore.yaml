@@ -1,0 +1,53 @@
+name: CI
+
+on: # yamllint disable-line rule:truthy
+  # push:
+    # branches:
+    #   - main
+  workflow_dispatch:
+
+# env:
+#   ACR_IMAGE_PATH_FRONTEND: ${{ secrets.ACR_LOGIN_SERVER }}/frontendmodule:1.0.${{ github.run_number }}-amd64
+#   ACR_IMAGE_PATH_BACKEND: ${{ secrets.ACR_LOGIN_SERVER }}/backendmodule:1.0.${{ github.run_number }}-amd64
+
+jobs:
+  build:
+    permissions:
+      id-token: write
+      contents: read # for actions/checkout to fetch code
+      security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
+      actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.7"
+
+      - name: Install dependencies
+        run: |
+          make install
+
+      - name: Build backend docker image
+        run: |
+          IMAGE=iot-backend
+          cd ./EdgeSolution/modules/BackendModule
+          docker build -f Dockerfile.amd64 -t $IMAGE .
+          echo "::set-output name=image::$IMAGE"
+
+      - name: anchore
+        #continue-on-error: true
+        run: |-
+          curl https://engine.anchore.io/docs/quickstart/docker-compose.yaml > docker-compose.yaml
+          docker-compose up -d
+          ANCHORE_CLI_URL=http://myserver.example.com:8228/v1
+          ANCHORE_CLI_USER=admin
+          ANCHORE_CLI_PASS=foobar
+          apt-get install python-pip
+          pip install anchorecli
+          source ~/.profile
+          anchore-cli --version
+          anchore-cli --url http://localhost:8228/v1 --u admin --p foobar system status
+           
+      
