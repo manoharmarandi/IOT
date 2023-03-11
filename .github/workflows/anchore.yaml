@@ -40,8 +40,8 @@ jobs:
         #continue-on-error: true
         run: |-
           sudo curl https://engine.anchore.io/docs/quickstart/docker-compose.yaml > docker-compose.yaml
-          sudo docker-compose up -d
-          sudo ANCHORE_CLI_URL=http://myserver.example.com:8228/v1
+          docker-compose up -d
+          sudo ANCHORE_CLI_URL=http://localhost:8228/v1
           sudo ANCHORE_CLI_USER=admin
           sudo ANCHORE_CLI_PASS=foobar
           sudo apt-get install python-pip
