@@ -39,15 +39,15 @@ jobs:
       - name: anchore
         #continue-on-error: true
         run: |-
-          curl https://engine.anchore.io/docs/quickstart/docker-compose.yaml > docker-compose.yaml
-          docker-compose up -d
-          ANCHORE_CLI_URL=http://myserver.example.com:8228/v1
-          ANCHORE_CLI_USER=admin
-          ANCHORE_CLI_PASS=foobar
-          apt-get install python-pip
-          pip install anchorecli
-          source ~/.profile
-          anchore-cli --version
-          anchore-cli --url http://localhost:8228/v1 --u admin --p foobar system status
+          sudo curl https://engine.anchore.io/docs/quickstart/docker-compose.yaml > docker-compose.yaml
+          sudo docker-compose up -d
+          sudo ANCHORE_CLI_URL=http://myserver.example.com:8228/v1
+          sudo ANCHORE_CLI_USER=admin
+          sudo ANCHORE_CLI_PASS=foobar
+          sudo apt-get install python-pip
+          sudo pip install anchorecli
+          sudo source ~/.profile
+          sudo anchore-cli --version
+          sudo anchore-cli --url http://localhost:8228/v1 --u admin --p foobar system status
            
       
