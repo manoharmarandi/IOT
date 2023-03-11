@@ -2,8 +2,8 @@ name: CI
 
 on: # yamllint disable-line rule:truthy
   push:
-    branches:
-      - main
+    # branches:
+    #   - main
   workflow_dispatch:
 
 # env:
@@ -63,7 +63,7 @@ jobs:
         run: |-
           npm install snyk -g
           snyk auth e6b5719c-46fa-4dd7-8cf1-50ebd68923ae
-          snyk container test iot-backend --sarif
+          snyk container test iot-backend
 
       - name: Run Snyk to check Docker image for vulnerabilities
         # Snyk can be used to break the build when it detects vulnerabilities.
