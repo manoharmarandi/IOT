@@ -100,12 +100,18 @@ jobs:
           exit-code: '0'
           severity: 'MEDIUM,HIGH,CRITICAL,LOW'
 
-      - name: anchore
-        continue-on-error: true
-        run:
-          pip install anchorecli
-          export PATH="$HOME/.local/bin/:$PATH"
-          anchore-cli image vuln iot-backend os
+      - name: Scan image
+        uses: anchore/scan-action@v3
+        id: imagescan
+        with:
+          image: "iot-backend"
+          acs-report-enable: "true"
+          fail-build: false
+
+      - name: upload Anchore Image scan SARIF report
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: ${{ steps.imagescan.outputs.sarif }}
 
       - name: snyk test
         continue-on-error: true
