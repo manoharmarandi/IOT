@@ -91,6 +91,7 @@ jobs:
           cd ./EdgeSolution/modules/BackendModule
           docker build -f Dockerfile.amd64 -t $IMAGE .
           echo "::set-output name=image::$IMAGE"
+
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
@@ -98,22 +99,21 @@ jobs:
           cache-dir: '/var/lib/trivy'
           exit-code: '0'
           severity: 'MEDIUM,HIGH,CRITICAL,LOW'
-      - uses: anchore/scan-action@v3
-        with:
-          image: "iot-backend"
-          severity-cutoff: critical
-          fail-build: false
-      - name: Upload artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: AnchoreReports
-          path: ./anchore-reports/
+
+      - name: anchore
+        continue-on-error: true
+        run:
+          pip install anchorecli
+          export PATH="$HOME/.local/bin/:$PATH"
+          anchore-cli image vuln iot-backend os
+
       - name: snyk test
         continue-on-error: true
         run: |-
           npm install snyk -g
           snyk auth e6b5719c-46fa-4dd7-8cf1-50ebd68923ae
           snyk container test iot-backend --json-file-output=vuln.json
+
       - name: Run Snyk to check Docker image for vulnerabilities
         # Snyk can be used to break the build when it detects vulnerabilities.
         # In this case we want to upload the issues to GitHub Code Scanning
@@ -127,12 +127,14 @@ jobs:
         with:
           image: iot-backend
           args: --file=./EdgeSolution/modules/BackendModule/Dockerfile.amd64
+
       - name: Build frontend docker image
         run: |
           IMAGE=iot-frontend
           cd ./EdgeSolution/modules/FrontendModule
           docker build -f Dockerfile.amd64 -t $IMAGE .
           echo "::set-output name=image::$IMAGE"
+
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
@@ -140,22 +142,21 @@ jobs:
           cache-dir: '/var/lib/trivy'
           exit-code: '0'
           severity: 'MEDIUM,HIGH,CRITICAL,LOW'
+
       - name: snyk test
         continue-on-error: true
         run: |-
            npm install snyk -g
            snyk auth e6b5719c-46fa-4dd7-8cf1-50ebd68923ae
            snyk container test iot-frontend --json-file-output=vuln.json
-      - uses: anchore/scan-action@v3
-        with:
-          image: "iot-frontend"
-          severity-cutoff: critical
-          fail-build: false
-      - name: Upload artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: AnchoreReports
-          path: .
+
+      - name: anchore
+        continue-on-error: true
+        run:
+          pip install anchorecli
+          export PATH="$HOME/.local/bin/:$PATH"
+          anchore-cli image vuln iot-frontend os
+      
       - name: Run Snyk to check Docker image for vulnerabilities
         # Snyk can be used to break the build when it detects vulnerabilities.
         # In this case we want to upload the issues to GitHub Code Scanning
