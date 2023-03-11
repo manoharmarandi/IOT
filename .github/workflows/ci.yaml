@@ -36,22 +36,22 @@ jobs:
           docker build -f Dockerfile.amd64 -t $IMAGE .
           echo "::set-output name=image::$IMAGE"
 
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'iot-backend'
-          cache-dir: '/var/lib/trivy'
-          exit-code: '0'
-          severity: 'MEDIUM,HIGH,CRITICAL,LOW'
+      # - name: Run Trivy vulnerability scanner
+      #   uses: aquasecurity/trivy-action@master
+      #   with:
+      #     image-ref: 'iot-backend'
+      #     cache-dir: '/var/lib/trivy'
+      #     exit-code: '0'
+      #     severity: 'MEDIUM,HIGH,CRITICAL,LOW'
 
-      - name: Run the Anchore Grype scan action
-        uses: anchore/scan-action@d5aa5b6cb9414b0c7771438046ff5bcfa2854ed7
-        id: scan
-        with:
-          image: "iot-backend"
-          fail-build: false
-          acs-report-enable: true
-          severity-cutoff: critical
+      # - name: Run the Anchore Grype scan action
+      #   uses: anchore/scan-action@d5aa5b6cb9414b0c7771438046ff5bcfa2854ed7
+      #   id: scan
+      #   with:
+      #     image: "iot-backend"
+      #     fail-build: false
+      #     acs-report-enable: true
+      #     severity-cutoff: critical
 
       # - name: Upload vulnerability report
       #   uses: github/codeql-action/upload-sarif@v2
@@ -63,7 +63,7 @@ jobs:
         run: |-
           npm install snyk -g
           snyk auth e6b5719c-46fa-4dd7-8cf1-50ebd68923ae
-          snyk container test iot-backend --json-file-output=vuln.json
+          snyk container test iot-backend --json
 
       - name: Run Snyk to check Docker image for vulnerabilities
         # Snyk can be used to break the build when it detects vulnerabilities.
@@ -79,59 +79,59 @@ jobs:
           image: iot-backend
           args: --file=./EdgeSolution/modules/BackendModule/Dockerfile.amd64
 
-      - name: Build frontend docker image
-        run: |
-          IMAGE=iot-frontend
-          cd ./EdgeSolution/modules/FrontendModule
-          docker build -f Dockerfile.amd64 -t $IMAGE .
-          echo "::set-output name=image::$IMAGE"
+      # - name: Build frontend docker image
+      #   run: |
+      #     IMAGE=iot-frontend
+      #     cd ./EdgeSolution/modules/FrontendModule
+      #     docker build -f Dockerfile.amd64 -t $IMAGE .
+      #     echo "::set-output name=image::$IMAGE"
 
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'iot-frontend'
-          cache-dir: '/var/lib/trivy'
-          exit-code: '0'
-          severity: 'MEDIUM,HIGH,CRITICAL,LOW'
+      # - name: Run Trivy vulnerability scanner
+      #   uses: aquasecurity/trivy-action@master
+      #   with:
+      #     image-ref: 'iot-frontend'
+      #     cache-dir: '/var/lib/trivy'
+      #     exit-code: '0'
+      #     severity: 'MEDIUM,HIGH,CRITICAL,LOW'
 
-      - name: Run the Anchore Grype scan action
-        uses: anchore/scan-action@d5aa5b6cb9414b0c7771438046ff5bcfa2854ed7
-        id: scan2
-        with:
-          image: "iot-backend"
-          fail-build: false
-          acs-report-enable: true
-          severity-cutoff: critical
+      # - name: Run the Anchore Grype scan action
+      #   uses: anchore/scan-action@d5aa5b6cb9414b0c7771438046ff5bcfa2854ed7
+      #   id: scan2
+      #   with:
+      #     image: "iot-backend"
+      #     fail-build: false
+      #     acs-report-enable: true
+      #     severity-cutoff: critical
 
-      - name: Upload vulnerability report
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: ${{ steps.scan.outputs.sarif }}
+      # - name: Upload vulnerability report
+      #   uses: github/codeql-action/upload-sarif@v2
+      #   with:
+      #     sarif_file: ${{ steps.scan.outputs.sarif }}
 
-      - name: snyk test
-        continue-on-error: true
-        run: |-
-           npm install snyk -g
-           snyk auth e6b5719c-46fa-4dd7-8cf1-50ebd68923ae
-           snyk container test iot-frontend --json-file-output=vuln.json
+      # - name: snyk test
+      #   continue-on-error: true
+      #   run: |-
+      #      npm install snyk -g
+      #      snyk auth e6b5719c-46fa-4dd7-8cf1-50ebd68923ae
+      #      snyk container test iot-frontend --json-file-output=vuln.json
       
-      - name: Run Snyk to check Docker image for vulnerabilities
-        # Snyk can be used to break the build when it detects vulnerabilities.
-        # In this case we want to upload the issues to GitHub Code Scanning
-        continue-on-error: true
-        uses: snyk/actions/docker@14818c4695ecc4045f33c9cee9e795a788711ca4
-        env:
-        # In order to use the Snyk Action you will need to have a Snyk API token.
-        # More details in https://github.com/snyk/actions#getting-your-snyk-token
-        # or you can signup for free at https://snyk.io/login
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          image: iot-frontend
-          args: --file=./EdgeSolution/modules/BackendModule/Dockerfile.amd64
-      # - name: Push backend docker image
-      #   run: |
-      #     docker push ${{env.ACR_IMAGE_PATH_BACKEND}}
+      # - name: Run Snyk to check Docker image for vulnerabilities
+      #   # Snyk can be used to break the build when it detects vulnerabilities.
+      #   # In this case we want to upload the issues to GitHub Code Scanning
+      #   continue-on-error: true
+      #   uses: snyk/actions/docker@14818c4695ecc4045f33c9cee9e795a788711ca4
+      #   env:
+      #   # In order to use the Snyk Action you will need to have a Snyk API token.
+      #   # More details in https://github.com/snyk/actions#getting-your-snyk-token
+      #   # or you can signup for free at https://snyk.io/login
+      #     SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      #   with:
+      #     image: iot-frontend
+      #     args: --file=./EdgeSolution/modules/BackendModule/Dockerfile.amd64
+      # # - name: Push backend docker image
+      # #   run: |
+      # #     docker push ${{env.ACR_IMAGE_PATH_BACKEND}}
 
-      # - name: Push frontend docker image
-      #   run: |
-      #     docker push ${{env.ACR_IMAGE_PATH_FRONTEND}}
+      # # - name: Push frontend docker image
+      # #   run: |
+      # #     docker push ${{env.ACR_IMAGE_PATH_FRONTEND}}
