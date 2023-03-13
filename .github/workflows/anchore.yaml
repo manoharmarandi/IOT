@@ -39,6 +39,7 @@ jobs:
       - name: anchore
         #continue-on-error: true
         run: |-
+          sudo su
           sudo curl https://engine.anchore.io/docs/quickstart/docker-compose.yaml > docker-compose.yaml
           docker-compose up -d
           sudo ANCHORE_CLI_URL=http://localhost:8228/v1
