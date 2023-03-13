@@ -36,6 +36,36 @@ jobs:
           docker build -f Dockerfile.amd64 -t $IMAGE .
           echo "::set-output name=image::$IMAGE"
 
+      - uses: google-github-actions/setup-gcloud@v0
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+      - name: Google Auth
+        id: auth
+        uses: 'google-github-actions/auth@v0'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+      # WARNING: The --cred-file flag is in preview and is subject to change.
+      - id: 'gcloud'
+        name: 'gcloud'
+        run: |-
+          gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}"
+          gcloud components install docker-credential-gcr
+          gcloud --quiet auth configure-docker
+      - name: Generate build ID
+        id: prep
+        run: |
+            env=prod
+            sha=${GITHUB_SHA::8}
+            ts=$(date +%Y%m%d%H%M%S)
+            echo "::set-output name=BUILD_ID::${env}-${ts}-${sha}"
+      - name: Build docker
+        id: build
+        run: |-
+          GCR_IMAGE=gcr.io/$PROJECT_ID/$IMAGE
+          docker tag iot-backend $GCR_IMAGE
+          docker push $GCR_IMAGE
+          echo "::set-output name=image::$GCR_IMAGE"
+
       # - name: Run Trivy vulnerability scanner
       #   uses: aquasecurity/trivy-action@master
       #   with:
