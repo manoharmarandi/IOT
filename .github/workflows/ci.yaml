@@ -58,6 +58,13 @@ jobs:
       #   with:
       #     sarif_file: ${{ steps.scan.outputs.sarif }}
 
+      - name: grype
+        continue-on-error: false
+        run: |-
+          curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sudo sh -s -- -b /usr/local/bin
+          grype -h
+          grype iot-backend
+
       - name: snyk test
         continue-on-error: true
         run: |-
