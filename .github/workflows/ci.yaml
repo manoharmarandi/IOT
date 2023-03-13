@@ -61,7 +61,7 @@ jobs:
       - name: Build docker
         id: build
         run: |-
-          GCR_IMAGE=gcr.io/$PROJECT_ID/$IMAGE
+          GCR_IMAGE=gcr.io/$PROJECT_ID/iot-backend
           docker tag iot-backend $GCR_IMAGE
           docker push $GCR_IMAGE
           echo "::set-output name=image::$GCR_IMAGE"
